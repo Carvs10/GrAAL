@@ -24,8 +24,10 @@ void reverse(void *first, void *last, size_t size)
   byte *first_iterator = (byte *)first;
   byte *last_iterator = (byte *)last;
 
+  int count = 0;
   while (first_iterator < last_iterator)
   {
+    //swap(*first_iterator, *last_iterator);
     first_iterator += size;
     last_iterator -= size;
   }
@@ -33,6 +35,18 @@ void reverse(void *first, void *last, size_t size)
 
 void *copy(const void *first, const void *last, const void *d_first, size_t size)
 {
+  const byte *first_iterator = (const byte *)first;
+  byte *new_array_iterator = (byte *)d_first;
+
+  while (first_iterator != last)
+  {
+    *new_array_iterator = *first_iterator;
+
+    first_iterator += size;
+    new_array_iterator += size;
+  }
+
+  return new_array_iterator;
 }
 
 void *clone(const void *first, const void *last, size_t size)
