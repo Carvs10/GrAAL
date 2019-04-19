@@ -152,12 +152,38 @@ bool none_of(const void *first, const void *last, size_t size, Predicate p)
 
 bool equal(const void *first1, const void *last1, const void *first2, size_t size, Equal eq)
 {
-  return false;
+  const byte *first1_iterator = (const byte *)first1;
+  const byte *first2_iterator = (const byte *)first2;
+
+  while (first1_iterator != last1)
+  {
+    if (!eq(first1_iterator, first2_iterator))
+    {
+      return false;
+    }
+
+    first1_iterator += size;
+    first2_iterator += size;
+  }
+  return true;
 }
 
 bool equal(const void *first1, const void *last1, const void *first2, const void *last2, size_t size, Equal eq)
 {
-  return false;
+  const byte *first1_iterator = (const byte *)first1;
+  const byte *first2_iterator = (const byte *)first2;
+
+  while (first1_iterator != last1)
+  {
+    if (!eq(first1_iterator, first2_iterator))
+    {
+      return false;
+    }
+
+    first1_iterator += size;
+    first2_iterator += size;
+  }
+  return true;
 }
 
 void *unique(void *first, void *last, size_t size, Equal eq)
