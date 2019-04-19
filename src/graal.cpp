@@ -51,29 +51,103 @@ void *copy(const void *first, const void *last, const void *d_first, size_t size
 
 void *clone(const void *first, const void *last, size_t size)
 {
+  const byte *first_iterator = (const byte *)first;
+  const byte *last_iterator = (const byte *)last;
+
+  const void *new_first = malloc(last_iterator - first_iterator);
+  byte *new_it = (byte *)new_first;
+
+  while (first_iterator != last_iterator)
+  {
+    *new_it = *first_iterator;
+
+    first_iterator += size;
+    new_it += size;
+  }
+
+  return (byte *)new_first;
 }
 
 const void *find_if(const void *first, const void *last, size_t size, Predicate p)
 {
+  const byte *first_iterator = (const byte *)first;
+
+  while (first_iterator != last)
+  {
+    if (p(first_iterator))
+    {
+      return first_iterator;
+    }
+
+    first_iterator += size;
+  }
+
+  return first_iterator;
 }
 
 const void *find(const void *first, const void *last, size_t size, const void *value, Equal eq)
 {
+  const byte *first_iterator = (const byte *)first;
+
+  while (first_iterator != last)
+  {
+    if (eq(first_iterator, value))
+    {
+      return first_iterator;
+    }
+
+    first_iterator += size;
+  }
+
+  return first_iterator;
 }
 
 bool all_of(const void *first, const void *last, size_t size, Predicate p)
 {
-  return false;
+  const byte *first_iterator = (const byte *)first;
+
+  while (first_iterator != last)
+  {
+    if (!p(first_iterator))
+    {
+      return false;
+    }
+    first_iterator += size;
+  }
+
+  return true;
 }
 
 bool any_of(const void *first, const void *last, size_t size, Predicate p)
 {
+  const byte *first_iterator = (const byte *)first;
+
+  while (first_iterator != last)
+  {
+    if (p(first_iterator))
+    {
+      return true;
+    }
+    first_iterator += size;
+  }
+
   return false;
 }
 
 bool none_of(const void *first, const void *last, size_t size, Predicate p)
 {
-  return false;
+  const byte *first_iterator = (const byte *)first;
+
+  while (first_iterator != last)
+  {
+    if (p(first_iterator))
+    {
+      return false;
+    }
+    first_iterator += size;
+  }
+
+  return true;
 }
 
 bool equal(const void *first1, const void *last1, const void *first2, size_t size, Equal eq)

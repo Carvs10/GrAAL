@@ -2,6 +2,7 @@
 #define GRAAL_LIB_H
 
 #include <iostream>
+#include <stdlib.h>
 #include <vector>
 
 using namespace std;
