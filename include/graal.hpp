@@ -39,7 +39,7 @@ void *unique(void *first, void *last, size_t size, Equal eq);
 
 void *partition(void *first, void *last, size_t size, Predicate p);
 
-void qsort(void *ptr, std::size_t count, size_t size, Equal eq);
+void qsort(void *first, size_t distance, size_t size, Equal eq);
 } // namespace graal
 
 #endif

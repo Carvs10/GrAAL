@@ -24,10 +24,14 @@ void reverse(void *first, void *last, size_t size)
   byte *first_iterator = (byte *)first;
   byte *last_iterator = (byte *)last;
 
-  int count = 0;
+  last_iterator -= size;
+
   while (first_iterator < last_iterator)
   {
-    //swap(*first_iterator, *last_iterator);
+    byte temp = *first_iterator;
+    *first_iterator = *last_iterator;
+    *last_iterator = temp;
+
     first_iterator += size;
     last_iterator -= size;
   }
@@ -54,7 +58,9 @@ void *clone(const void *first, const void *last, size_t size)
   const byte *first_iterator = (const byte *)first;
   const byte *last_iterator = (const byte *)last;
 
-  const void *new_first = malloc(last_iterator - first_iterator);
+  int quantity = (last_iterator - first_iterator) / size;
+  const void *new_first = calloc(quantity, size);
+
   byte *new_it = (byte *)new_first;
 
   while (first_iterator != last_iterator)
@@ -188,13 +194,88 @@ bool equal(const void *first1, const void *last1, const void *first2, const void
 
 void *unique(void *first, void *last, size_t size, Equal eq)
 {
+  byte *first_iterator = (byte *)first;
+  byte *slow_iterator = first_iterator;
+
+  while (first_iterator != last)
+  {
+    byte *u_first_it = (byte *)first;
+    while (u_first_it != slow_iterator)
+    {
+      if (eq(u_first_it, first_iterator))
+      {
+        break;
+      }
+
+      u_first_it += size;
+    }
+
+    if (u_first_it == slow_iterator)
+    {
+      byte temp = *u_first_it;
+      *u_first_it = *first_iterator;
+      *first_iterator = temp;
+
+      slow_iterator += size;
+    }
+
+    first_iterator += size;
+  }
+
+  return slow_iterator;
 }
 
 void *partition(void *first, void *last, size_t size, Predicate p)
 {
+  byte *first_iterator = (byte *)first;
+  byte *fast_iterator;
+
+  while (first_iterator != last)
+  {
+    if (!p(first_iterator))
+    {
+      fast_iterator = first_iterator + size;
+      while (fast_iterator != last)
+      {
+        if (p(fast_iterator))
+        {
+          byte temp = *first_iterator;
+          *first_iterator = *fast_iterator;
+          *fast_iterator = temp;
+          break;
+        }
+
+        fast_iterator += size;
+      }
+
+      if (fast_iterator == last)
+      {
+        return first_iterator;
+      }
+    }
+
+    first_iterator += size;
+  }
+
+  return first_iterator;
 }
 
-void qsort(void *ptr, std::size_t count, size_t size, Equal eq)
+void qsort(void *first, size_t distance, size_t size, Compare cmp)
 {
+  size_t length = distance * size;
+
+  byte *first_iterator = (byte *)first;
+  byte *last = first_iterator + length;
+
+  while (first_iterator != last)
+  {
+    const void *min = graal::min(first_iterator, last, size, cmp);
+
+    byte temp = *((byte *)min);
+    *((byte *)min) = *first_iterator;
+    *first_iterator = temp;
+
+    first_iterator += size;
+  }
 }
 } // namespace graal
